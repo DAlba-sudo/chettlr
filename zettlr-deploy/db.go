@@ -10,6 +10,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
+const (
+	QueryCreateArticleTable = "CREATE TABLE IF NOT EXISTS Articles (id SERIAL PRIMARY KEY, title TEXT NOT NULL UNIQUE, description TEXT, content TEXT NOT NULL, tags TEXT);"
+)
+
 var (
 	ErrNoConfigFile = errors.New("failed to find chettlr config file at ~/.chettlr.json")
 )
@@ -56,8 +60,8 @@ func getDatabase(dbconf DatabaseConfiguration) (*sql.DB, error) {
 	return db, db.Ping()
 }
 
-func hasMaintenance(db *sql.DB) bool {
-	rows, err := db.Query("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = $1;", "maintenance")
+func hasTable(db *sql.DB, table string) bool {
+	rows, err := db.Query("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = $1;", table)
 	if err != nil {
 		panic(err)
 	}
@@ -66,6 +70,11 @@ func hasMaintenance(db *sql.DB) bool {
 }
 
 func createTables(db *sql.DB) error {
-	
+
+	_, err := db.Exec(QueryCreateArticleTable)
+	if err != nil {
+		panic(err)
+	}
+
 	return nil
 }

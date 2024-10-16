@@ -2,16 +2,18 @@ package main
 
 import (
 	"flag"
+	"io"
 	"log"
 	"os"
 )
 
 var (
-	InfoFile, _ = os.CreateTemp("", "zettlr-*.info")
+	logfile, _ = os.CreateTemp("", "zettlr-*.log");
+	logOut = io.MultiWriter(os.Stdout, logfile)
 
-	InfoLogger  = log.New(InfoFile, "[Info] ", log.LstdFlags)
-	DebugLogger = log.New(os.Stdout, "[Debug] ", log.LstdFlags)
-	ErrorLogger = log.New(os.Stdout, "[Error] ", log.LstdFlags)
+	InfoLogger  = log.New(logOut, "[Info] ", log.LstdFlags)
+	DebugLogger = log.New(logOut, "[Debug] ", log.LstdFlags)
+	ErrorLogger = log.New(logOut, "[Error] ", log.LstdFlags)
 )
 
 // the expected use case is that the Zettlr export command will call this executable and
@@ -38,8 +40,8 @@ func main() {
 
 	// test that the database has already been set-up
 	// by checking for the maintenance table...
-	if !hasMaintenance(db) {
-		InfoLogger.Printf("missing maintenance table, going to init the db\n")
+	if !hasTable(db, "articles") {
+		InfoLogger.Printf("missing article table, going to init the db\n")
 
 		// create the tables the database requires to operate...
 		err = createTables(db)
@@ -51,9 +53,32 @@ func main() {
 	// collect the html file that was exported and place it into
 	// the database
 	flag.Parse()
-	InfoLogger.Printf("Publishing %s to the website...", flag.Arg(0))
+
+	publish_target := flag.Arg(0)
+	InfoLogger.Printf("Publishing %s to the website...", publish_target)
 
 	// upload the html file that was exported to the database
 	// by pushing the html content, with the proper meta tags, to the
 	// central repository where it can be pulled down by others.
+	html_path := findTargetHTML(publish_target)
+	if html_path != "" {
+		DebugLogger.Printf("found the publishing target HTML file (%s)", html_path)
+	} else {
+		ErrorLogger.Fatalf("could not find the target html file for %s", publish_target)
+	}
+
+	var frontmatter YAMLFrontmatter
+	err = parseYamlFrontmatter(publish_target, &frontmatter)
+	if err != nil {
+		panic(err)
+	}
+
+	DebugLogger.Printf("parsed yaml (title: %s, desc: %s)", frontmatter.Title, frontmatter.Description)
+
+	err = publish(db, html_path, &frontmatter)
+	if err != nil {
+		panic(err)
+	}
+
+	InfoLogger.Print("article has been published")
 }
