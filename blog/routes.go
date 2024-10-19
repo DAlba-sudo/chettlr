@@ -2,6 +2,7 @@ package blog
 
 import (
 	"database/sql"
+	"flag"
 	"html/template"
 	"log"
 	"net/http"
@@ -14,8 +15,10 @@ var (
 )
 
 func GetMux() http.Handler {
-	loadDatabaseConf("/home/diego/.chettlr.json", &DatabaseConf)
-	ldb, err := getDatabase(DatabaseConf)
+	if flag.Arg(0) == "" {
+		loadDatabaseConf("/home/diego/.chettlr.json", &DatabaseConf)
+	}
+	ldb, err := getDatabase(DatabaseConf, flag.Arg(0))
 	if err != nil {
 		panic(err)
 	}

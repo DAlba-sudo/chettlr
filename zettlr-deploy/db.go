@@ -42,15 +42,21 @@ func loadDatabaseConf(path string, conf *DatabaseConfiguration) error {
 	return nil
 }
 
-func getDatabase(dbconf DatabaseConfiguration) (*sql.DB, error) {
-	psqlInfo := fmt.Sprintf(
-		"host=%s port=%d user=%s password=%s dbname=%s",
-		dbconf.Host,
-		dbconf.Port,
-		dbconf.User,
-		dbconf.Password,
-		dbconf.DatabaseName,
-	)
+func getDatabase(dbconf DatabaseConfiguration, psqlURL string) (*sql.DB, error) {
+	var psqlInfo string
+	if psqlURL == "" {
+		psqlInfo = fmt.Sprintf(
+				"host=%s port=%d user=%s password=%s dbname=%s",
+				dbconf.Host,
+				dbconf.Port,
+				dbconf.User,
+				dbconf.Password,
+				dbconf.DatabaseName,
+		)
+	} else {
+		psqlInfo = psqlURL
+	}
+	
 
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {

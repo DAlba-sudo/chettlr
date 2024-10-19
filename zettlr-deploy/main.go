@@ -22,17 +22,25 @@ var (
 // chettlr-deploy <file_path>
 
 func main() {
-	// we begin by checking if the config file contains the information
-	// needed to connect to the chettlr database.
+	flag.Parse()
+
 	var DatabaseConf DatabaseConfiguration
-	err := loadDatabaseConf("/home/diego/.chettlr.json", &DatabaseConf)
-	if err != nil {
-		ErrorLogger.Fatal(err.Error())
+
+	if (flag.Arg(0) == "") {
+		// we begin by checking if the config file contains the information
+		// needed to connect to the chettlr database.
+		err := loadDatabaseConf("/home/diego/.chettlr.json", &DatabaseConf)
+		if err != nil {
+			ErrorLogger.Fatal(err.Error())
+		}
+	} else {
+		
 	}
+
 	DebugLogger.Printf("Connecting to %s...\n", DatabaseConf.DatabaseName)
 
 	// connecting to the database
-	db, err := getDatabase(DatabaseConf)
+	db, err := getDatabase(DatabaseConf, flag.Arg(0))
 	if err != nil {
 		ErrorLogger.Fatal(err.Error())
 	}
@@ -54,7 +62,7 @@ func main() {
 	// the database
 	flag.Parse()
 
-	publish_target := flag.Arg(0)
+	publish_target := flag.Arg(1)
 	InfoLogger.Printf("Publishing %s to the website...", publish_target)
 
 	// upload the html file that was exported to the database
