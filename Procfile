@@ -1,1 +1,1 @@
-web: chettlr $DATABASE_URL -port $PORT
+web: chettlr -db '$DATABASE_URL' -port $PORT
