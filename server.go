@@ -11,12 +11,13 @@ import (
 type WebServer struct {
 	address string
 	port    int
+	database string
 }
 
 func (ws WebServer) Serve(ctx context.Context) error {
 	// generate the address, port pair
 	address := fmt.Sprintf("%s:%d", ws.address, ws.port)
-	http.Handle("/blog/", http.StripPrefix("/blog", blog.GetMux()))
+	http.Handle("/blog/", http.StripPrefix("/blog", blog.GetMux(ws.database)))
 
 	DebugLogger.Printf("Binding to %s...", address)
 

@@ -19,12 +19,16 @@ var (
 
 func main() {
 	port := flag.Int("port", 8443, "port to use when binding to the server")
+	dbf := flag.String("db", "", "database to bind to")
+
 	flag.Parse()
+
 	main_supervisor := suture.NewSimple("WebServer")
 
 	ws := WebServer{
 		address: "0.0.0.0",
 		port:    *port,
+		database: *dbf,
 	}
 	_ = main_supervisor.Add(ws)
 

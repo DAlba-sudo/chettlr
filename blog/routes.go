@@ -2,7 +2,6 @@ package blog
 
 import (
 	"database/sql"
-	"flag"
 	"html/template"
 	"log"
 	"net/http"
@@ -14,11 +13,11 @@ var (
 	db           *sql.DB
 )
 
-func GetMux() http.Handler {
-	if flag.Arg(0) == "" {
+func GetMux(database string) http.Handler {
+	if database == "" {
 		loadDatabaseConf("/home/diego/.chettlr.json", &DatabaseConf)
 	}
-	ldb, err := getDatabase(DatabaseConf, flag.Arg(0))
+	ldb, err := getDatabase(DatabaseConf, database)
 	if err != nil {
 		panic(err)
 	}
