@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	QueryCreateArticleTable = "CREATE TABLE IF NOT EXISTS Articles (id SERIAL PRIMARY KEY, title TEXT NOT NULL UNIQUE, description TEXT, content TEXT NOT NULL, tags TEXT);"
+	QueryCreateArticleTable = "CREATE TABLE IF NOT EXISTS Articles (id SERIAL PRIMARY KEY, title TEXT NOT NULL UNIQUE, description TEXT, content TEXT NOT NULL, tags TEXT DEFAULT 'articles,');"
 )
 
 var (

@@ -2,22 +2,24 @@
 
 <div class="container-fluid" style="width: 80%;">
     <div class="row">
-        <h1 class="m-3 p-2">Chettlr<span style="color: rgb(66, 201, 133);">    /blog</span></h1>
-    </div>
-    <div class="row">
-        <div class="col-7">
-            <iframe class="rounded overflow-none m-4 " src="/published/20241015170842.html" frameborder="0" width="90%" height="800px"></iframe>
+        <div class="col-4 m-3 p-4 rounded shadow bg-light text-dark">
+            <h1>Thanks for stopping by!</h1>
+            <p>
+                I enjoy playing chess and every now and then I want to write as a way to explore the game that we all have come to play and love.
+                <br>
+                <br>
+                You'll find many different types of articles from opening analysis to game reviews. I'm currently getting ready to up my training for
+                OTB tournaments and will also keep track of that here. Hope you enjoy!
+            </p>
         </div>
 
-        <div class="col">
-            <div class="row">
-
-            </div>
+        <div class="col m-3 p-4 ">
             <div class="row">
                 <h2>Latest Articles</h2>
                 <ul>
                     {{ range . }}
-                    <li><a>{{.}}</a></li>
+                    <li><a href="/blog/article/{{.Id}}/">{{.Title}}</a></li>
+                    <p>{{.Description}}</p>
                     {{end}}
                 </ul>
             </div>
