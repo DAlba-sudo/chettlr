@@ -4,8 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"os"
-	"strconv"
 
 	"github.com/thejerf/suture/v4"
 )
