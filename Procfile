@@ -1,1 +1,1 @@
-./chettlr $DATABASE_URL
+chettlr $DATABASE_URL
