@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 
 	"github.com/thejerf/suture/v4"
@@ -12,7 +13,7 @@ var (
 )
 
 func main() {
-
+	flag.Parse()
 	main_supervisor := suture.NewSimple("WebServer")
 
 	// add the webserver as a service
