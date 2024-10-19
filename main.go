@@ -15,23 +15,18 @@ var (
 )
 
 func main() {
+	port := flag.Int("port", 8443, "port to use when binding to the server")
 	flag.Parse()
 	main_supervisor := suture.NewSimple("WebServer")
 	
-	port, err := strconv.Atoi(os.Getenv("port"))
-	if err != nil {
-		panic(err)
-	}
-
-	// add the webserver as a service
 	ws := WebServer{
 		address: "0.0.0.0",
-		port:    port,
+		port:    *port,
 	}
 	_ = main_supervisor.Add(ws)
 
 	fmt.Println("Starting webserver...")
-	err = main_supervisor.Serve(ctx)
+	err := main_supervisor.Serve(ctx)
 	if err != nil {
 		panic(err)
 	}
